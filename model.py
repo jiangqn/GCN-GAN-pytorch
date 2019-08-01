@@ -52,11 +52,11 @@ class Generator(nn.Module):
         :return out_shot: FloatTensor (batch_size, node_num * node_num)
         """
         batch_size, window_size, node_num = in_shots.size()[0: 3]
-        eye = torch.eye(node_num).unsqueeze(0).unsqueeze(0).expand(batch_size, window_size, node_num, node_num)
+        eye = torch.eye(node_num).cuda().unsqueeze(0).unsqueeze(0).expand(batch_size, window_size, node_num, node_num)
         in_shots = in_shots + eye
         diag = in_shots.sum(dim=-1, keepdim=True).pow(-0.5).expand(in_shots.size()) * eye
         adjacency = diag.matmul(in_shots).matmul(diag)
-        nodes = torch.rand(batch_size, window_size, node_num, self.in_features)
+        nodes = torch.rand(batch_size, window_size, node_num, self.in_features).cuda()
         gcn_output = self.gcn(adjacency, nodes)
         gcn_output = gcn_output.view(batch_size, window_size, -1)
         _, (hn, _) = self.lstm(gcn_output)

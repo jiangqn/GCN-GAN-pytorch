@@ -42,6 +42,9 @@ discriminator = Discriminator(
     hidden_size=config['disc_hidden']
 )
 
+generator = generator.cuda()
+discriminator = discriminator.cuda()
+
 mse = nn.MSELoss(reduction='sum')
 
 pretrain_optimizer = optim.RMSprop(generator.parameters(), lr=config['pretrain_learning_rate'])
@@ -53,6 +56,7 @@ print('pretrain generator')
 for epoch in range(config['pretrain_epoches']):
     for i, data in enumerate(train_loader):
         in_shots, out_shot = data
+        in_shots, out_shot = in_shots.cuda(), out_shot.cuda()
         predicted_shot = generator(in_shots)
         out_shot = out_shot.view(config['batch_size'], -1)
         loss = mse(predicted_shot, out_shot)
@@ -67,8 +71,10 @@ for epoch in range(config['gan_epoches']):
     for i, (data, sample) in enumerate(zip(train_loader, sample_loader)):
         # update discriminator
         in_shots, out_shot = data
+        in_shots, out_shot = in_shots.cuda(), out_shot.cuda()
         predicted_shot = generator(in_shots)
         _, sample = sample
+        sample = sample.cuda()
         sample = sample.view(config['batch_size'], -1)
         real_logit = discriminator(sample).mean()
         fake_logit = discriminator(predicted_shot).mean()

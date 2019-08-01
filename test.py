@@ -11,7 +11,7 @@ node_num = config['node_num']
 window_size = config['window_size']
 
 base_path = os.path.join('./data/', config['dataset'])
-generator = torch.load(os.path.join(base_path, 'generator.pkl'))
+generator = torch.load(os.path.join(base_path, 'generator.pkl')).cuda()
 
 test_save_path = os.path.join(base_path, 'test.npy')
 test_data = LPDataset(test_save_path, window_size)
@@ -29,6 +29,7 @@ total_missrate = 0
 
 for i, data in enumerate(test_loader):
     in_shots, out_shot = data
+    in_shots, out_shot = in_shots.cuda(), out_shot.cuda()
     predicted_shot = generator(in_shots)
     predicted_shot = predicted_shot.view(-1, config['node_num'], config['node_num'])
     predicted_shot = (predicted_shot + predicted_shot.transpose(1, 2)) / 2
