@@ -55,6 +55,8 @@ print('pretrain generator')
 
 for epoch in range(config['pretrain_epoches']):
     for i, data in enumerate(train_loader):
+        discriminator_optimizer.zero_grad()
+        generator_optimizer.zero_grad()
         in_shots, out_shot = data
         in_shots, out_shot = in_shots.cuda(), out_shot.cuda()
         predicted_shot = generator(in_shots)
