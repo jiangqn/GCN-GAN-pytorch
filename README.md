@@ -6,19 +6,19 @@ This repository provide a pytorch implemention for the GCN-GAN model proposed in
 
 Modify hyper-parameters in file ```config.yml```.
 
-### preprocess data
+### Preprocess data
 
 ```
 python preprocess.py
 ```
 
-### training
+### Train
 
 ```
 python train.py
 ```
 
-### test
+### Test
 
 ```
 python test.py
